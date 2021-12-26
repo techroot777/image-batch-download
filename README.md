@@ -36,6 +36,25 @@ const imageSettings: ImageSettings = {
 await downloader.download(imageSettings);
 ```
 
+### Batch download
+```ts
+const downloader = getDownloader();
+const urls = [
+  'https://path-to-image-1.jpeg',
+  'https://path-to-image-2.png',
+  'https://path-to-image-3.webp'
+];
+const format = ImageFormat.Png;
+const settings: ImageSettings[] = urls.map((url, index) => ({
+    imageUrl: url,
+    toFormat: format,
+    quality: 75,
+    outputPath: `./output/image-${index}.${format}`,
+    size: 100
+}));
+await downloader.batchDownload(settings, 25);
+```
+
 ## When to use?
 - For web scraping of image-rich sites
 - To download hundreds or thousands of remote images without the server identifying the numerous requests as an attack
