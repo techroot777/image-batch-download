@@ -1,10 +1,4 @@
-import {
-    ImageFormat,
-    ImageProcessor,
-    ImageRectConfig,
-    ImageSettings,
-    ImageSquareConfig
-} from '../../core';
+import { ImageFormat, ImageProcessor, ImageSettings } from '../../core';
 import sharp, { ResizeOptions, Sharp } from 'sharp';
 
 export class ImageProcessorSharp implements ImageProcessor {

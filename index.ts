@@ -1,2 +1,2 @@
 export * from './src/core';
-export * from './src/main/adapters';
+export * from './src/main';

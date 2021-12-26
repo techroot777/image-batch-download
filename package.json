@@ -1,19 +1,15 @@
 {
-	"name": "image-batch-download-stream",
-	"description": "A package to download single or multiple remote images with streams",
+	"name": "image-batch-downloader",
 	"version": "1.0.0",
 	"main": "index.ts",
-	"license": "MIT",
 	"types": "./dist/index.d.ts",
-	"keywords": [
-		"download batch",
-		"batch image resize",
-		"batch download resize",
-		"batch stream download"
-	],
-	"author": "techroot",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/techroot777/image-batch-download.git"
+	},
 	"scripts": {
-		"build": "tsc"
+		"build": "rimraf dist && tsc"
 	},
 	"devDependencies": {
 		"@types/axios": "^0.14.0",
