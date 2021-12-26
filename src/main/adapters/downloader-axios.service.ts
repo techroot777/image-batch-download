@@ -1,8 +1,9 @@
 import { DownloaderService, ImageProcessor, ImageSettings } from '../../core';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import * as fs from 'fs';
 import * as util from 'util';
 import * as stream from 'stream';
+import { constants } from 'http2';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -20,13 +21,25 @@ export class DownloaderAxiosService implements DownloaderService {
     }
 
     async download(settings: ImageSettings): Promise<void> {
-        const response = await axios.get(settings.imageUrl, this.requestConfig);
-        const dataStream = (await response.data) as NodeJS.ReadableStream;
-        const sharp = await this.imageProcessor.handle(settings);
-        return await pipeline(
-            dataStream,
-            sharp,
-            fs.createWriteStream(settings.outputPath)
-        );
+        try {
+            const getResponse = await axios.get(
+                settings.imageUrl,
+                this.requestConfig
+            );
+            const dataStream =
+                (await getResponse.data) as NodeJS.ReadableStream;
+            const sharp = await this.imageProcessor.handle(settings);
+            return await pipeline(
+                dataStream,
+                sharp,
+                fs.createWriteStream(settings.outputPath)
+            );
+        } catch (error) {
+            const errorStatus = (error as AxiosError)?.response?.status;
+            if (errorStatus === constants.HTTP_STATUS_NOT_FOUND) {
+                return;
+            }
+            throw error;
+        }
     }
 }
