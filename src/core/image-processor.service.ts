@@ -25,12 +25,12 @@ export interface ImageBasicConfig {
 }
 
 export interface ImageRectConfig extends ImageBasicConfig {
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
 }
 
 export interface ImageSquareConfig extends ImageBasicConfig {
-    size: number;
+    size?: number;
 }
 
 export type ImageSettings = ImageSquareConfig | ImageRectConfig;

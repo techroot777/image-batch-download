@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as util from 'util';
 import * as stream from 'stream';
 import { constants } from 'http2';
+import { delayPromise } from '../util';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -15,8 +16,14 @@ export class DownloaderAxiosService implements DownloaderService {
 
     constructor(private readonly imageProcessor: ImageProcessor) {}
 
-    async batchDownload(settings: ImageSettings[]): Promise<void[]> {
-        const tasks = settings.map((setting) => this.download(setting));
+    async batchDownload(
+        settings: ImageSettings[],
+        delay: number = 25
+    ): Promise<void[]> {
+        const tasks = settings.map(async (setting, index) => {
+            await delayPromise(Math.min(delay ?? 25, 0) * index);
+            return await this.download(setting);
+        });
         return await Promise.all(tasks);
     }
 

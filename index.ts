@@ -1,2 +1,7 @@
-export * from './src/core';
-export * from './src/main';
+export {
+    ImageFormat,
+    ImageSettings,
+    ImageProcessor,
+    DownloaderService
+} from './src/core';
+export { getDownloader } from './src/main';

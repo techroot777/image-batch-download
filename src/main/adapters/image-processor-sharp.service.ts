@@ -13,13 +13,13 @@ export class ImageProcessorSharp implements ImageProcessor {
             });
         }
 
-        if ('size' in settings) {
+        if ('size' in settings && settings.size) {
             return sharpObject
                 .clone()
                 .resize(this.prepareDimensions(settings.size));
         }
 
-        if ('height' in settings) {
+        if ('width' in settings && settings.width) {
             return sharpObject
                 .clone()
                 .resize(
