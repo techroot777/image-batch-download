@@ -1,4 +1,6 @@
 # image-batch-download
+[![npm version](https://badge.fury.io/js/image-batch-downloader.svg)](https://badge.fury.io/js/image-batch-downloader)
+
 A simple package for basic image downloading and processing.
 
 Supported formats:
