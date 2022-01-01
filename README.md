@@ -37,6 +37,7 @@ await downloader.download(imageSettings);
 ```
 
 ### Batch download
+Scenario similar to the previous one but with PNG format and limit of 10 simultaneous downloads.
 ```ts
 const downloader = getDownloader();
 const urls = [
@@ -52,7 +53,7 @@ const settings: ImageSettings[] = urls.map((url, index) => ({
     outputPath: `./output/image-${index}.${format}`,
     size: 100
 }));
-await downloader.batchDownload(settings, 25);
+downloader.batchDownload(settings, 10).subscrible();
 ```
 
 ## When to use?
@@ -62,5 +63,6 @@ await downloader.batchDownload(settings, 25);
 
 ## Why this package?
 - Use of streams
+- Use of observables to emit the progress of batch downloads
 - Asynchronous code usage
 - Simple and easy to use API
