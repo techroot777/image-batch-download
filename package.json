@@ -1,6 +1,6 @@
 {
 	"name": "image-batch-downloader",
-	"version": "1.0.3",
+	"version": "2.0.0",
 	"main": "index.ts",
 	"types": "./dist/index.d.ts",
 	"license": "MIT",
@@ -31,6 +31,7 @@
 	},
 	"dependencies": {
 		"axios": "^0.24.0",
+		"rxjs": "^7.5.1",
 		"sharp": "^0.29.3",
 		"slugify": "^1.6.1"
 	}
