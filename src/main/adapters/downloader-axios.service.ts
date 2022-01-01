@@ -18,10 +18,11 @@ export class DownloaderAxiosService implements DownloaderService {
 
     async batchDownload(
         settings: ImageSettings[],
-        delay: number = 25
+        delay: number = 15
     ): Promise<void[]> {
         const tasks = settings.map(async (setting, index) => {
-            await delayPromise(Math.min(delay ?? 25, 0) * index);
+            const delayTime = Math.max(delay ?? 15, 0) * index;
+            await delayPromise(delayTime);
             return await this.download(setting);
         });
         return await Promise.all(tasks);
@@ -30,15 +31,15 @@ export class DownloaderAxiosService implements DownloaderService {
     async download(settings: ImageSettings): Promise<void> {
         try {
             const getResponse = await axios.get(
-                settings.imageUrl,
+                new URL(settings.imageUrl).toString(),
                 this.requestConfig
             );
             const dataStream =
                 (await getResponse.data) as NodeJS.ReadableStream;
-            const sharp = await this.imageProcessor.handle(settings);
+            const imageProcessor = await this.imageProcessor.handle(settings);
             return await pipeline(
                 dataStream,
-                sharp,
+                imageProcessor,
                 fs.createWriteStream(settings.outputPath)
             );
         } catch (error) {
