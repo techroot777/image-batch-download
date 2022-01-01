@@ -7,21 +7,24 @@ import { constants } from 'http2';
 import { delayPromise } from '../util';
 
 const pipeline = util.promisify(stream.pipeline);
+const DEFAULT_TIMEOUT_MS = 15_000;
+const DEFAULT_DELAY_MS = 25;
 
 export class DownloaderAxiosService implements DownloaderService {
     readonly requestConfig: AxiosRequestConfig = {
         method: 'get',
-        responseType: 'stream'
+        responseType: 'stream',
+        timeout: DEFAULT_TIMEOUT_MS
     };
 
     constructor(private readonly imageProcessor: ImageProcessor) {}
 
     async batchDownload(
         settings: ImageSettings[],
-        delay: number = 15
+        delay: number = DEFAULT_DELAY_MS
     ): Promise<void[]> {
         const tasks = settings.map(async (setting, index) => {
-            const delayTime = Math.max(delay ?? 15, 0) * index;
+            const delayTime = Math.max(delay ?? DEFAULT_DELAY_MS, 0) * index;
             await delayPromise(delayTime);
             return await this.download(setting);
         });
