@@ -7,21 +7,25 @@ import { constants } from 'http2';
 import { delayPromise } from '../util';
 
 const pipeline = util.promisify(stream.pipeline);
+const DEFAULT_TIMEOUT_MS = 15_000;
+const DEFAULT_DELAY_MS = 25;
 
 export class DownloaderAxiosService implements DownloaderService {
     readonly requestConfig: AxiosRequestConfig = {
         method: 'get',
-        responseType: 'stream'
+        responseType: 'stream',
+        timeout: DEFAULT_TIMEOUT_MS
     };
 
     constructor(private readonly imageProcessor: ImageProcessor) {}
 
     async batchDownload(
         settings: ImageSettings[],
-        delay: number = 25
+        delay: number = DEFAULT_DELAY_MS
     ): Promise<void[]> {
         const tasks = settings.map(async (setting, index) => {
-            await delayPromise(Math.min(delay ?? 25, 0) * index);
+            const delayTime = Math.max(delay ?? DEFAULT_DELAY_MS, 0) * index;
+            await delayPromise(delayTime);
             return await this.download(setting);
         });
         return await Promise.all(tasks);
@@ -30,15 +34,15 @@ export class DownloaderAxiosService implements DownloaderService {
     async download(settings: ImageSettings): Promise<void> {
         try {
             const getResponse = await axios.get(
-                settings.imageUrl,
+                new URL(settings.imageUrl).toString(),
                 this.requestConfig
             );
             const dataStream =
                 (await getResponse.data) as NodeJS.ReadableStream;
-            const sharp = await this.imageProcessor.handle(settings);
+            const imageProcessor = await this.imageProcessor.handle(settings);
             return await pipeline(
                 dataStream,
-                sharp,
+                imageProcessor,
                 fs.createWriteStream(settings.outputPath)
             );
         } catch (error) {
