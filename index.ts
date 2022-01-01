@@ -1,7 +1,7 @@
 export {
     ImageFormat,
     ImageSettings,
-    ImageProcessor,
-    DownloaderService
+    DownloaderService,
+    DownloadProgress
 } from './src/core';
 export { getDownloader } from './src/main';
